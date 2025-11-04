@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的网盘</title>
+    <!-- 相对路径引用CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 使用CDN加载Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 添加网站图标 -->
+    <link rel="icon" type="image/x-icon" href="icons/favicon.ico">
+    
+    <!-- GitHub Pages优化 -->
+    <meta name="description" content="现代化Web网盘应用，支持文件分类、预览和管理">
+    <meta name="keywords" content="网盘,文件管理,文件预览,GitHub Pages">
+</head>
+<body>
+    <div class="container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-cloud"></i>
+                <h1>我的网盘</h1>
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li class="active" data-category="all">
+                        <i class="fas fa-home"></i>
+                        <span>全部文件</span>
+                    </li>
+                    <li data-category="documents">
+                        <i class="fas fa-file-alt"></i>
+                        <span>文档</span>
+                    </li>
+                    <li data-category="images">
+                        <i class="fas fa-image"></i>
+                        <span>图片</span>
+                    </li>
+                    <li data-category="videos">
+                        <i class="fas fa-video"></i>
+                        <span>视频</span>
+                    </li>
+                    <li data-category="audios">
+                        <i class="fas fa-music"></i>
+                        <span>音频</span>
+                    </li>
+                    <li data-category="others">
+                        <i class="fas fa-folder"></i>
+                        <span>其他</span>
+                    </li>
+                </ul>
+            </nav>
+            <div class="storage-info">
+                <div class="progress-bar">
+                    <div class="progress" style="width: 30%;"></div>
+                </div>
+                <p>已使用 3GB / 10GB</p>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部工具栏 -->
+            <header class="toolbar">
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="搜索文件...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="actions">
+                    <label for="upload-input" class="btn upload-btn">
+                        <i class="fas fa-upload"></i>
+                        <span>上传</span>
+                    </label>
+                    <input type="file" id="upload-input" multiple style="display: none;">
+                    <button class="btn" id="new-folder-btn">
+                        <i class="fas fa-folder-plus"></i>
+                        <span>新建文件夹</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- 文件显示区域 -->
+            <div class="view-switcher">
+                <button class="active" data-view="grid"><i class="fas fa-th-large"></i></button>
+                <button data-view="list"><i class="fas fa-list"></i></button>
+            </div>
+
+            <!-- 面包屑导航 -->
+            <div class="breadcrumb">
+                <span>首页</span>
+            </div>
+
+            <!-- 文件网格 -->
+            <div class="files-container grid-view" id="files-container">
+                <!-- 文件项将通过JavaScript动态生成 -->
+            </div>
+        </main>
+    </div>
+
+    <!-- 文件预览模态框 -->
+    <div class="modal" id="preview-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="preview-title">文件预览</h3>
+                <button id="close-preview" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="preview-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新建文件夹模态框 -->
+    <div class="modal" id="new-folder-modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>新建文件夹</h3>
+                <button id="close-folder-modal" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="folder-name" placeholder="请输入文件夹名称">
+                <button id="create-folder-btn" class="btn primary">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
