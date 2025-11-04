@@ -3,51 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人自我介绍</title>
+    <title>GitHub 简易网盘</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
-        body { background: #f5f7fa; padding: 2rem; }
-        .card { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 2.5rem; box-shadow: 0 2px 15px rgba(0,0,0,0.08); }
-        .avatar { width: 160px; height: 160px; border-radius: 50%; margin: 0 auto 1.5rem; overflow: hidden; border: 4px solid #e8f4f8; }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        h1 { text-align: center; color: #2d3748; font-size: 1.8rem; margin-bottom: 0.5rem; }
-        .title { text-align: center; color: #4299e1; font-weight: 600; margin-bottom: 2rem; }
-        .info { line-height: 1.8; color: #4a5568; margin-bottom: 1.5rem; }
-        .info span { color: #2d3748; font-weight: 600; }
-        .strengths { margin-top: 2rem; }
-        .strengths h3 { color: #2d3748; margin-bottom: 1rem; font-size: 1.2rem; }
-        .strengths ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.8rem; }
-        .strengths li { background: #e8f4f8; color: #4299e1; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: #007bff;
+        }
+        .upload-area i {
+            font-size: 50px;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        .file-list {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .file-item:hover {
+            background-color: #f9f9f9;
+        }
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #fff;
+        }
+        .btn-primary {
+            background-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <!-- 头像区域 -->
-        <div class="avatar">
-            <img src="IMG_0640.png" alt="个人头像">
+    <div class="container">
+        <h1>GitHub 简易网盘</h1>
+        
+        <div class="upload-area" id="dropArea">
+            <<i>📂</</i>
+            <p>点击或拖拽文件到此处上传</p>
+            <input type="file" id="fileInput" class="hidden" multiple>
+            <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">选择文件</button>
         </div>
-        
-        <!-- 基本信息 -->
-        <h1>张三</h1>
-        <div class="title">前端开发工程师 | 3年经验</div>
-        
-        <div class="info">
-            <p>大家好！我是<span>张三</span>，一名热爱技术、追求极致的前端开发工程师。</p>
-            <p>擅长 <span>HTML/CSS/JavaScript</span> 开发，熟悉 Vue、React 等框架，喜欢通过代码打造流畅的用户体验。</p>
-            <p>性格开朗随和，注重团队协作，平时喜欢研究新技术、逛技术社区，也爱爬山和摄影～</p>
-        </div>
-        
-        <!-- 个人优势 -->
-        <div class="strengths">
-            <h3>我的核心优势</h3>
-            <ul>
-                <li>响应式布局开发</li>
-                <li>组件化设计</li>
-                <li>性能优化</li>
-                <li>用户体验设计</li>
-                <li>快速问题排查</li>
-            </ul>
+
+        <div class="file-list">
+            <h3>文件列表</h3>
+            <table id="fileTable">
+                <thead>
+                    <tr>
+                        <<th>文件名</</th>
+                        <<th>操作</</th>
+                    </tr>
+                </thead>
+                <tbody id="fileBody">
+                    <!-- 文件列表将通过JS动态生成 -->
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <script>
+        // GitHub 仓库信息（请替换为你自己的）
+        const GITHUB_USERNAME = "zcx110110";
+        const REPO_NAME = "zcx.github.io";
+        const BRANCH = "main"; // 通常是main或master
+
+        // 获取文件列表
+        fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents`, {
+            headers: {
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        })
+        .then(response => response.json())
+        .then(files => {
+            const fileBody = document.getElementById('fileBody');
+            files.forEach(file => {
+                if (file.type === 'file') { // 只显示文件，不显示文件夹
+                    const row = document.createElement('tr');
+                    row.className = 'file-item';
+                    row.innerHTML = `
+                        <td>${file.name}</td>
+                        <td>
+                            <a href="${file.download_url}" class="btn btn-primary" download>下载</a>
+                            <button class="btn btn-danger" onclick="deleteFile('${file.path}')">删除</button>
+                        </td>
+                    `;
+                    fileBody.appendChild(row);
+                }
+            });
+        })
+        .catch(error => {
+            console.error('获取文件列表失败:', error);
+        });
+
+        // 上传文件
+        const fileInput = document.getElementById('fileInput');
+        const dropArea = document.getElementById('dropArea');
+
+        fileInput.addEventListener('change', handleFiles);
+        dropArea.addEventListener('dragover', preventDefault);
+        dropArea.addEventListener('drop', handleDrop);
+
+        function preventDefault(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function handleFiles() {
+            const files = this.files;
+            uploadFiles(files);
+        }
+
+        function handleDrop(e) {
+            const files = e.dataTransfer.files;
+            uploadFiles(files);
+        }
+
+        function uploadFiles(files) {
+            Array.from(files).forEach(file => {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('message', `Upload ${file.name}`);
+                formData.append('branch', BRANCH);
+
+                fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${file.name}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': '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', // 请替换为你的Token，注意保护好Token
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({
+                        message: `Upload ${file.name}`,
+                        content: btoa(new Uint8Array(await file.arrayBuffer()).reduce((data, byte) => data + String.fromCharCode(byte), '')),
+                        branch: BRANCH
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('上传成功！');
+                    location.reload(); // 刷新页面以显示新文件
+                })
+                .catch(error => {
+                    console.error('上传失败:', error);
+                    alert('上传失败，请检查Token是否正确或文件是否已存在');
+                });
+            });
+        }
+
+        // 删除文件
+        function deleteFile(path) {
+            if (confirm('确定要删除该文件吗？此操作不可逆！')) {
+                fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${path}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': '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', // 请替换为你的Token
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({
+                        message: `Delete ${path}`,
+                        branch: BRANCH
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('删除成功！');
+                    location.reload(); // 刷新页面以更新文件列表
+                })
+                .catch(error => {
+                    console.error('删除失败:', error);
+                    alert('删除失败，请检查Token是否正确');
+                });
+            }
+        }
+    </script>
 </body>
 </html>
